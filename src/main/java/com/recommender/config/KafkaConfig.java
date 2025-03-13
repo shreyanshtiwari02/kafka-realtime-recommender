@@ -1,8 +1,13 @@
 package com.recommender.config;
 
+import com.recommender.model.Item;
+import com.recommender.model.UserEvent;
+import com.recommender.utils.JsonSerde;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +15,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.config.TopicBuilder;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -132,5 +140,36 @@ public class KafkaConfig {
                 .partitions(4)
                 .replicas(1)
                 .build();
+    }
+    
+    /**
+     * Producer factory for Kafka producers.
+     */
+    @Bean
+    public ProducerFactory<String, Object> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerde.JsonSerializer.class);
+        configProps.put(ProducerConfig.ACKS_CONFIG, "all");
+        configProps.put(ProducerConfig.RETRIES_CONFIG, 3);
+        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+    
+    /**
+     * Kafka template for sending UserEvent messages.
+     */
+    @Bean
+    public KafkaTemplate<String, UserEvent> userEventKafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+    
+    /**
+     * Kafka template for sending Item messages.
+     */
+    @Bean
+    public KafkaTemplate<String, Item> itemKafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
     }
 }
