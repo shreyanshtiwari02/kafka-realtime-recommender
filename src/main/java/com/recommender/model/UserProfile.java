@@ -22,11 +22,22 @@ import java.util.Set;
 @Slf4j
 public class UserProfile {
     private String userId;
-    private Map<String, Double> categoryPreferences;  // Category -> preference score
-    private Map<String, Double> featurePreferences;   // Feature -> preference score
-    private Set<String> recentlyViewedItems;          // Recently viewed item IDs
-    private Set<String> purchasedItems;               // Purchased item IDs
-    private Map<String, Double> itemRatings;          // ItemId -> rating score
+    
+    @Builder.Default
+    private Map<String, Double> categoryPreferences = new HashMap<>();  // Category -> preference score
+    
+    @Builder.Default
+    private Map<String, Double> featurePreferences = new HashMap<>();   // Feature -> preference score
+    
+    @Builder.Default
+    private Set<String> recentlyViewedItems = new HashSet<>();          // Recently viewed item IDs
+    
+    @Builder.Default
+    private Set<String> purchasedItems = new HashSet<>();               // Purchased item IDs
+    
+    @Builder.Default
+    private Map<String, Double> itemRatings = new HashMap<>();          // ItemId -> rating score
+    
     private long lastActivityTimestamp;               // Last user activity timestamp
     
     /**
