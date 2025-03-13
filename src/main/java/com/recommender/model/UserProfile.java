@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class UserProfile {
     private String userId;
     private Map<String, Double> categoryPreferences;  // Category -> preference score
@@ -49,6 +51,12 @@ public class UserProfile {
             case VIEW:
                 recentlyViewedItems.add(event.getItemId());
                 break;
+            case CLICK:
+                // Track clicks, could update a click count map if needed
+                break;
+            case ADD_TO_CART:
+                // Track items added to cart
+                break;
             case PURCHASE:
                 purchasedItems.add(event.getItemId());
                 break;
@@ -57,7 +65,17 @@ public class UserProfile {
                     itemRatings.put(event.getItemId(), event.getScore());
                 }
                 break;
-            // Other event types can be handled here
+            case SEARCH:
+                // Track search terms if available in contextInfo
+                break;
+            case LIKE:
+                // Track liked items
+                break;
+            case DISLIKE:
+                // Track disliked items
+                break;
+            default:
+                log.warn("Unhandled event type: {}", event.getEventType());
         }
     }
 }
