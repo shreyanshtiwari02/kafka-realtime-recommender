@@ -32,3 +32,14 @@ Building a recommendation system that adapts to user behavior in real-time using
   - DeepLearning4J for ML integration
 - Created main application class with `@EnableKafka` and `@EnableKafkaStreams` annotations
 - Configured Kafka properties in `application.properties`
+
+### Phase 3: Domain Model and Kafka Configuration (2025-03-14)
+- Created model classes:
+  - `UserEvent`: Represents user interactions (views, clicks, purchases, etc.)
+  - `Item`: Represents items that can be recommended
+  - `UserProfile`: Contains user preferences and interaction history
+  - `Recommendation`: Represents recommendations generated for users
+- Set up Kafka configuration:
+  - Defined Kafka topics for user events, profiles, recommendations, etc.
+  - Configured Kafka Streams for real-time processing
+  - Set up topic partitioning and replication
